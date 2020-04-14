@@ -11,9 +11,13 @@ module.exports = async function(event,context,callback){
 
 	await sleep(500)
 
+	sleep(5000).then(()=>{
+		console.log('none block 500')
+	})
+
 	// console.log('between await')
 
-	// await sleep(500)
+	// await sleep(5000)
 
 	console.log(`after await asyncid: ${async_hook.executionAsyncId()}`)
 	// setTimeout(()=>{

@@ -11,6 +11,18 @@ function allAsyncEndCallback(rootAsyncId){
 	console.log(`rootAsyncId: ${rootAsyncId}`)
 	let watchingHookIdList = [rootAsyncId]
 	let hookList = []
+	function removePromiseChain(asyncId){
+		let tmp = hookList.find(item=>item.hookId === asyncId)
+		if(hookList.length > 0 && tmp && tmp.type ==="PROMISE"){
+			hookList.splice(hookList.indexOf(tmp),1)
+			printLog(`${asyncId} found and removed , find trigger ${tmp.triggerAsyncId}`)
+			if(tmp.type === 'PROMISE' && tmp.triggerAsyncId && hookList.find(item=>item.hookId === tmp.triggerAsyncId)){
+				removePromiseChain(tmp.triggerAsyncId)
+			}
+		}else{
+			printLog(`${asyncId} not found or not Promise`)
+		}
+	}
 	let hook = async_hook.createHook({
 		init:(hookId,type,triggerAsyncId,resource)=>{
 			// printLog('init async hook:' + async_hook.executionAsyncId())
@@ -44,12 +56,15 @@ function allAsyncEndCallback(rootAsyncId){
 			printLog(`${hookId} after`)
 			let hook = hookList.find(item=>item.hookId === hookId)
 			if(hook && hook.type === 'PROMISE'){
-				hookList.splice(hookList.findIndex(item=>item.hookId === hookId),1)
+				printLog(hookId + 'found in list')
+				removePromiseChain(hookId)
 				printLog(`left list: ${JSON.stringify(hookList)}`)
 				if(hookList.length === 0){
 					hook.disable()
 					printLog('all async done')
 				}
+			}else{
+				printLog(hookId + 'not found in list')
 			}
 		}
 	})
