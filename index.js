@@ -7,7 +7,7 @@ function printLog(message){
 	fs.writeFileSync(1,'\n')
 }
 
-function allAsyncEndCallback(rootAsyncId){
+function allAsyncEndCallback(rootAsyncId,callback){
 	console.log(`rootAsyncId: ${rootAsyncId}`)
 	let watchingHookIdList = [rootAsyncId]
 	let hookList = []
@@ -48,7 +48,7 @@ function allAsyncEndCallback(rootAsyncId){
 				if(hookList.length === 0){
 					hook.disable()
 					// callback()
-					printLog('all async done')
+					callback()
 				}
 			}
 		},
@@ -61,7 +61,7 @@ function allAsyncEndCallback(rootAsyncId){
 				printLog(`left list: ${JSON.stringify(hookList)}`)
 				if(hookList.length === 0){
 					hook.disable()
-					printLog('all async done')
+					callback()
 				}
 			}else{
 				printLog(hookId + 'not found in list')
@@ -117,7 +117,9 @@ app.get('/', (req, res) => {
 		let asyncId = async_hook.executionAsyncId()
 		
 
-		allAsyncEndCallback(asyncId)
+		allAsyncEndCallback(asyncId,()=>{
+			printLog('all async done')
+		})
 		console.log('between a & u')
 		// userCode().then(ret=>{
 		// 	res.end(ret)

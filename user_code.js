@@ -1,21 +1,35 @@
 const async_hook = require('async_hooks')
 const user_async_module = require('./user_async_module')
+const http = require('http');
 
 module.exports = async function(event,context,callback){
 	console.log(`user root asyncid: ${async_hook.executionAsyncId()}`)
 	let sleep = (timeout)=>new Promise(resolve=> setTimeout(resolve,timeout))
 
-	let TmpInterval = setInterval(()=>{},1000)
+	// HTTP场景，验证通过，最后会残留一个TCPSERVERWRAP
+	// const server = http.createServer((req, res) => {
+	// 	res.end();
+	//   });
+	//   server.on('clientError', (err, socket) => {
+	// 	socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
+	//   });
+	//   server.listen(8000)
+	  
+
+	// let TmpInterval = setInterval(()=>{},1000)
 	
-	clearInterval(TmpInterval)
+	// clearInterval(TmpInterval)
 
-	await sleep(500)
+	// await sleep(500)
 
-	sleep(5000).then(()=>{
-		console.log('none block 500')
-	})
+	// sleep(1000).then(()=>{
+	// 	console.log('none block 1000')
+	// 	return sleep(1000)
+	// }).then(()=>{
+	// 	console.log('none block 2000')
+		
+	// })
 
-	// console.log('between await')
 
 	// await sleep(5000)
 
