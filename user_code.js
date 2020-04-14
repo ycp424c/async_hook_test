@@ -1,6 +1,7 @@
 const async_hook = require('async_hooks')
 const user_async_module = require('./user_async_module')
 const http = require('http');
+const {fork} = require('child_process')
 
 module.exports = async function(event,context,callback){
 	console.log(`user root asyncid: ${async_hook.executionAsyncId()}`)
@@ -14,6 +15,9 @@ module.exports = async function(event,context,callback){
 	// 	socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
 	//   });
 	//   server.listen(8000)
+
+	// child_process场景
+	fork('./child_async')
 	  
 
 	// let TmpInterval = setInterval(()=>{},1000)
